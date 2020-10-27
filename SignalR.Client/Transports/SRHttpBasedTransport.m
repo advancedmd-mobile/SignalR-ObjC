@@ -63,7 +63,7 @@
     manager.securityPolicy.validatesDomainName = [SRSecurityPolicy sharedManager].validatesDomainName;
     
     SRLogTransportDebug(@"will negotiate at url: %@", [[request URL] absoluteString]);
-    [manager dataTaskWithRequest:request uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
         
     } downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
         
@@ -97,28 +97,7 @@
             block([[SRNegotiationResponse alloc] initWithDictionary:responseObject], nil);
         }
     }];
-    
-//    /////
-//    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-//    [operation setResponseSerializer:[AFJSONResponseSerializer serializer]];
-//    operation.securityPolicy.allowInvalidCertificates = [SRSecurityPolicy sharedManager].allowInvalidCertificates;
-//    operation.securityPolicy.validatesDomainName = [SRSecurityPolicy sharedManager].validatesDomainName;
-//    //operation.shouldUseCredentialStorage = self.shouldUseCredentialStorage;
-//    //operation.credential = self.credential;
-//    //operation.securityPolicy = self.securityPolicy;
-//    SRLogTransportDebug(@"will negotiate at url: %@", [[request URL] absoluteString]);
-//    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        SRLogTransportInfo(@"negotiate was successful %@", responseObject);
-//        if(block) {
-//            block([[SRNegotiationResponse alloc] initWithDictionary:responseObject], nil);
-//        }
-//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//        SRLogTransportError(@"negotiate failed %@", error);
-//        if(block) {
-//            block(nil, error);
-//        }
-//    }];
-//    [operation start];
+    [dataTask resume];
 }
 
 - (void)start:(id<SRConnectionInterface>)connection connectionData:(NSString *)connectionData completionHandler:(void (^)(id response, NSError *error))block {
@@ -141,7 +120,7 @@
     manager.securityPolicy.validatesDomainName = [SRSecurityPolicy sharedManager].validatesDomainName;
     
     SRLogTransportDebug(@"will send at url: %@", [[request URL] absoluteString]);
-    [manager dataTaskWithRequest:request uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
+    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
         
     } downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
         
@@ -177,6 +156,7 @@
             block(responseObject, nil);
         }
     }];
+    [dataTask resume];
 }
 
 - (void)completeAbort {
@@ -224,7 +204,7 @@
         manager.securityPolicy.validatesDomainName = [SRSecurityPolicy sharedManager].validatesDomainName;
         
         SRLogTransportDebug(@"will abort at url: %@", [[request URL] absoluteString]);
-        [manager dataTaskWithRequest:request uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
+        NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
             
         } downloadProgress:^(NSProgress * _Nonnull downloadProgress) {
             
@@ -253,6 +233,7 @@
             
             SRLogTransportInfo(@"abort was successful %@", responseString);
         }];
+        [dataTask resume];
     }
 }
 
